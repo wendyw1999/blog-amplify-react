@@ -1,0 +1,49 @@
+type Blog @model @auth (
+    rules: [
+      # allow all authenticated users ability to create posts
+      # allow owners ability to update and delete their posts
+      { allow: owner ,provider:userPools},
+
+      # allow all authenticated users to read posts
+      { allow: private, operations: [read],provider:userPools},
+    ]
+  ){
+  id: ID!
+  name: String!
+  posts: [Post] @connection(keyName: "byBlog", fields: ["id"])
+}
+
+type Post @model @key(name: "byBlog", fields: ["blogID","createdAt"],queryField: "postByDate") 
+@auth (
+    rules: [
+      { allow: owner ,provider:userPools},
+
+      # allow all authenticated users to read posts
+      { allow: private, operations: [read],provider:userPools},
+    ]
+  ) {
+  id: ID!
+  title: String!
+  blogID: ID!
+  blog: Blog @connection(fields: ["blogID"])
+  createdAt: AWSDateTime!
+  comments: [Comment] @connection(keyName: "byPost", fields: ["id"])
+}
+
+type Comment @model @key(name: "byPost", fields: ["postID","createdAt"],queryField: "commentByDate")
+@auth (
+    rules: [
+      { allow: owner ,provider:userPools},
+
+      # allow all authenticated users to read posts
+      { allow: private, operations: [read],provider:userPools},
+    ]
+  ) {
+  id: ID!
+  postID: ID!
+  post: Post @connection(fields: ["postID"])
+  blogID: ID!
+  blog: Blog @connection(fields:["blogID"])
+  content: String!
+  createdAt: AWSDateTime!
+}
