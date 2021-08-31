@@ -26,7 +26,7 @@ User can filter the feed by username to narrow down all the blog posts.
 
 # Feature 3: Make Comment
 <p align="center">
-<img src='./example/comment.PNG' width=200 title="Comment"/>
+<img src='./example/comment.png' width=200 title="Comment"/>
 </p>
 
 
